@@ -1,6 +1,5 @@
 import pygame
 
-
 image_path = "data/data/com.MyfirstGame.myapp/files/app/"
 clock = pygame.time.Clock()
 
@@ -10,11 +9,10 @@ screen = pygame.display.set_mode((700, 399))
 pygame.display.set_caption("my first game")
 icon = pygame.image.load("Pygame projects/first_game/icons/djostic.icon.png")
 pygame.display.set_icon(icon)
+myFont = pygame.font.Font("Pygame projects/first_game/fonts/Roboto-Black.ttf", 40)
 
 # square = pygame.Surface((50, 170))
 # square.fill('Blue')
-
-myFont = pygame.font.Font("Pygame projects/first_game/fonts/Roboto-Black.ttf", 40)
 # text_surface = myFont.render('Kitty_myau', True, 'orange')
 
 
@@ -22,7 +20,7 @@ player = pygame.image.load("Pygame projects/first_game/icons/characters/standing
 bg = pygame.image.load("Pygame projects/first_game/icons/bg.jpg").convert()
 # player = pygame.image.load("Pygame projects/first_game/icons/characters/standing.png")
 
-# animation packs and coordination
+# animation packs
 walk_left = [
     pygame.image.load("Pygame projects/first_game/icons/characters/L1.png").convert_alpha(),
     pygame.image.load("Pygame projects/first_game/icons/characters/L2.png").convert_alpha(),
@@ -59,7 +57,7 @@ enemies_walk_left = [
 ]
 enemies_dead_img = pygame.image.load("Pygame projects/first_game/icons/characters/deadbody_first.png").convert_alpha()
 
-
+# Character discription
 player_anim_count = 0
 bg_x = 0
 
@@ -69,6 +67,7 @@ player_y = 300
 is_jump = False
 jump_count = 9
 
+# Enemy discription
 enemy_anim_count = 0
 enemy_speed = 10
 enemy_x = 720
@@ -76,7 +75,7 @@ enemy_y = 300
 enemies_list_in_game = []
 enemies_deads = []
 
-# sound
+# Sounds
 bg_sounds = pygame.mixer.Sound("Pygame projects/first_game/sounds/maincraft.mp3")
 bg_sounds.play()
 pistol_sound = pygame.mixer.Sound("Pygame projects/first_game/sounds/pistol_sound.mp3")
@@ -121,7 +120,7 @@ while running:
     screen.blit(bg, (bg_x + 590, 0))
     screen.blit(ammo_image, (600, 10))
 
-# Ammo_menu
+# Ammo_menu_print
     ammo = myFont.render(str(bullets_left), True, (255, 149, 0))
     screen.blit(ammo, (650, 5))
 
@@ -130,7 +129,7 @@ while running:
         player_rect = walk_left[0].get_rect(topleft=[player_x, player_y])
         enemy_rect = walk_left[0].get_rect(topleft=[enemy_x, enemy_y])
 
- # enemy movement
+# Enemy movement
         if enemies_list_in_game:
             for i,el in enumerate(enemies_list_in_game):
                 screen.blit(enemies_walk_left[enemy_anim_count], el)
@@ -142,7 +141,7 @@ while running:
                 if player_rect.colliderect(el):
                     gameplay = False
                     print("yoy lose")
-# enemies
+# enemies corps
         if enemies_deads:
             for i, el in enumerate(enemies_deads):
                 screen.blit(enemies_dead_img, el)
@@ -164,7 +163,7 @@ while running:
 
 
 
-# Player movement
+# Player control
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             screen.blit(walk_left[player_anim_count], (player_x, player_y))
@@ -178,7 +177,7 @@ while running:
             player_x -= player_speed
         elif keys[pygame.K_RIGHT] and player_x < 670:
             player_x += player_speed
-
+# Jump
         if not is_jump:
             if keys[pygame.K_UP]:
                 is_jump = True
@@ -196,7 +195,7 @@ while running:
                 jump_count = 9
 
 
-        # Animation counter
+# Animation counter
         if player_anim_count == 8:
             player_anim_count = 0
         else:
@@ -207,13 +206,11 @@ while running:
         else:
             enemy_anim_count += 1
 
-        # background movement
+# background movement
         bg_x -= 2
         if bg_x == - 700:
             bg_x = 0
-
-
-
+# Bullets behavior
         if bullets:
             for i,el in enumerate(bullets):
                 screen.blit(bullet, (el.x, el.y))
@@ -221,7 +218,7 @@ while running:
 
                 if el.x > 700:
                     bullets.pop(i)
-
+# The moment of the death
                 if enemies_list_in_game:
                     for i, enemy in enumerate(enemies_list_in_game):
                         if el.colliderect(enemy):
@@ -235,6 +232,7 @@ while running:
         # screen.blit(player, (100, 30))
         # pygame.draw.circle(screen, 'Red', (10, 70), 5)
         # screen.fill((98, 153, 217))
+# If the game is lost
     else:
         screen.fill((237, 192, 69))
         screen.blit(lose_lable, (270, 200))
@@ -242,6 +240,7 @@ while running:
         screen.blit(restart_lable, restart_lable_rect)
 
         mouth = pygame.mouse.get_pos()
+# Restart button
         if restart_lable_rect.collidepoint(mouth) and pygame.mouse.get_pressed()[0]:
             player_x = 150
             enemies_list_in_game.clear()
@@ -249,11 +248,11 @@ while running:
             ammo_boxes_in_game.clear()
             bullets_left = 10
             gameplay = True
+            enemies_deads.clear()
 
     pygame.display.update()
 
-
-
+# Event block
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -267,4 +266,5 @@ while running:
             pistol_sound.play()
             bullets_left -= 1
 
+# Framerate
     clock.tick(26)
